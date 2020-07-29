@@ -16,7 +16,8 @@ export default class App extends React.Component {
     super(props);
     this.state = {
       search: '',
-      pageCount: 0,
+      pageCount: 1,
+      currentPage: 1,
     };
     this.handleInput = this.handleInput.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -33,14 +34,17 @@ export default class App extends React.Component {
   }
 
   handleSubmit() {
+    const { search, currentPage } = this.state;
     axios({
       method: 'get',
       url: '/events',
       params: {
-        date: '-300',
+        _limit: 10,
+        _page: currentPage,
+        q: search,
       },
     })
-      .then(({ data }) => console.log(data))
+      .then((res) => console.log(res.data, res))
       .catch((err) => console.error(err));
   }
 
