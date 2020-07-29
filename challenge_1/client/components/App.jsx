@@ -44,7 +44,13 @@ export default class App extends React.Component {
         q: search,
       },
     })
-      .then((res) => console.log(res.data, res))
+      .then(({ headers, data }) => {
+        console.log(data, headers['x-total-count']);
+        this.setState({
+          search: '',
+          pageCount: Number(headers['x-total-count']),
+        });
+      })
       .catch((err) => console.error(err));
   }
 
