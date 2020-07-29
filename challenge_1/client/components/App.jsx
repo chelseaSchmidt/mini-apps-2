@@ -69,7 +69,7 @@ export default class App extends React.Component {
         </form>
         <div>
           {data.map(({ date, description }) => (
-            <div key={`${date}-${description.slice(0, 5)}`}>
+            <div key={`${date}-${description.slice(0, 7)}`}>
               {description}
             </div>
           ))}
