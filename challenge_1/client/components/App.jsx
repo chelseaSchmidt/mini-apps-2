@@ -21,7 +21,9 @@ export default class App extends React.Component {
       currentPage: 1,
     };
     this.handleInput = this.handleInput.bind(this);
+    this.handlePageClick = this.handlePageClick.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.reRender = this.reRender.bind(this);
   }
 
   handleInput(e) {
@@ -30,22 +32,26 @@ export default class App extends React.Component {
     });
   }
 
-  handlePageClick() {
-    console.log('change page');
+  handlePageClick({ selected }) {
+    const { search } = this.state;
+    this.setState({ currentPage : selected + 1 });
+    getResults(selected + 1, search, this.reRender);
   }
 
   handleSubmit() {
-    const { search, currentPage } = this.state;
-    getResults(currentPage, search, (err, pageCount, data) => {
-      if (err) {
-        console.error(err);
-      } else {
-        console.log(pageCount, data);
-        this.setState({
-          pageCount,
-        });
-      }
-    });
+    const { search } = this.state;
+    getResults(1, search, this.reRender);
+  }
+
+  reRender(err, count, data) {
+    if (err) {
+      console.error(err);
+    } else {
+      console.log(count, data);
+      this.setState({
+        pageCount: count / 10,
+      });
+    }
   }
 
   render() {
