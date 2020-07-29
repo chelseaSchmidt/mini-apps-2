@@ -1,11 +1,14 @@
 import React from 'react';
 import axios from 'axios';
+import ReactPaginate from 'react-paginate';
+import '../styles/style.css';
 
 export default class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       search: '',
+      pageCount: 0,
     };
     this.handleInput = this.handleInput.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -17,6 +20,10 @@ export default class App extends React.Component {
     });
   }
 
+  handlePageClick() {
+    console.log('change page');
+  }
+
   handleSubmit() {
     axios.get('/events')
       .then(({ data }) => console.log(data))
@@ -24,7 +31,7 @@ export default class App extends React.Component {
   }
 
   render() {
-    const { search } = this.state;
+    const { search, pageCount } = this.state;
     return (
       <div>
         <form>
@@ -38,6 +45,21 @@ export default class App extends React.Component {
           />
           <button type="button" onClick={this.handleSubmit}>Search</button>
         </form>
+        <div id="react-paginate">
+          <ReactPaginate
+            previousLabel={'previous'}
+            nextLabel={'next'}
+            breakLabel={'...'}
+            breakClassName={'break-me'}
+            pageCount={pageCount}
+            marginPagesDisplayed={2}
+            pageRangeDisplayed={5}
+            onPageChange={this.handlePageClick}
+            containerClassName={'pagination'}
+            subContainerClassName={'pages pagination'}
+            activeClassName={'active'}
+          />
+        </div>
       </div>
     );
   }
