@@ -12,7 +12,6 @@ export default class App extends React.Component {
       currentPage: 1,
       data: [],
     };
-    this.handleEnter = this.handleEnter.bind(this);
     this.handleInput = this.handleInput.bind(this);
     this.handlePageClick = this.handlePageClick.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -20,15 +19,13 @@ export default class App extends React.Component {
   }
 
   handleInput(e) {
-    this.setState({
-      search: e.target.value,
-    });
-  }
-
-  handleEnter(e) {
-    e.preventDefault();
     if (e.key === 'Enter') {
+      e.preventDefault();
       this.handleSubmit();
+    } else {
+      this.setState({
+        search: e.target.value,
+      });
     }
   }
 
@@ -38,7 +35,7 @@ export default class App extends React.Component {
     getResults(selected + 1, search, this.reRender);
   }
 
-  handleSubmit() {
+  handleSubmit(e) {
     const { search } = this.state;
     getResults(1, search, this.reRender);
   }
@@ -47,7 +44,6 @@ export default class App extends React.Component {
     if (err) {
       console.error(err);
     } else {
-      console.log(count, data);
       this.setState({
         pageCount: count / 10,
         data,
@@ -66,7 +62,7 @@ export default class App extends React.Component {
             name="search-input"
             type="text"
             onChange={this.handleInput}
-            onKeyPress={this.handleEnter}
+            onKeyPress={this.handleInput}
             value={search}
           />
           <button type="button" onClick={this.handleSubmit}>Search</button>
