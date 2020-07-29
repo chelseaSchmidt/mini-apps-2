@@ -19,6 +19,7 @@ export default class App extends React.Component {
       search: '',
       pageCount: 1,
       currentPage: 1,
+      data: [],
     };
     this.handleInput = this.handleInput.bind(this);
     this.handlePageClick = this.handlePageClick.bind(this);
@@ -50,12 +51,13 @@ export default class App extends React.Component {
       console.log(count, data);
       this.setState({
         pageCount: count / 10,
+        data,
       });
     }
   }
 
   render() {
-    const { search, pageCount } = this.state;
+    const { search, pageCount, data } = this.state;
     return (
       <div>
         <form>
@@ -69,6 +71,9 @@ export default class App extends React.Component {
           />
           <button type="button" onClick={this.handleSubmit}>Search</button>
         </form>
+        <div>
+          {data.map((record) => <div>{record.description}</div>)}
+        </div>
         <div id="react-paginate">
           <ReactPaginate
             previousLabel="previous"
