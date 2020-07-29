@@ -1,6 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import ReactPaginate from 'react-paginate';
+import { getResults } from '../utilities/http';
 import '../styles/style.css';
 
 /*
@@ -35,23 +36,16 @@ export default class App extends React.Component {
 
   handleSubmit() {
     const { search, currentPage } = this.state;
-    axios({
-      method: 'get',
-      url: '/events',
-      params: {
-        _limit: 10,
-        _page: currentPage,
-        q: search,
-      },
-    })
-      .then(({ headers, data }) => {
-        console.log(data, headers['x-total-count']);
+    getResults(currentPage, search, (err, pageCount, data) => {
+      if (err) {
+        console.error(err);
+      } else {
+        console.log(pageCount, data);
         this.setState({
-          search: '',
-          pageCount: Number(headers['x-total-count']),
+          pageCount,
         });
-      })
-      .catch((err) => console.error(err));
+      }
+    });
   }
 
   render() {
