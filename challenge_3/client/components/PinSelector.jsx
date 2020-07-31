@@ -1,7 +1,7 @@
 import React from 'react';
-import { func, bool } from 'prop-types';
+import { func, bool, number } from 'prop-types';
 
-const PinSelector = ({ bowl, newTurn }) => {
+const PinSelector = ({ bowl, newTurn, maxPins }) => {
   const rows = [
     [1, 2, 3],
     [4, 5, 6],
@@ -15,7 +15,10 @@ const PinSelector = ({ bowl, newTurn }) => {
         return (
           <div className="pin-selector-row" key={`row-${i}`}>
             {row.map((num) => {
-              return <button type="button" key={`button-${num}`} id={`button-${num}`} onClick={bowl}>{num}</button>;
+              if (num <= maxPins) {
+                return <button type="button" key={`button-${num}`} id={`button-${num}`} onClick={bowl}>{num}</button>;
+              }
+              return <div key={`button-${num}`} />;
             })}
           </div>
         );
@@ -28,4 +31,5 @@ export default PinSelector;
 PinSelector.propTypes = {
   bowl: func.isRequired,
   newTurn: bool.isRequired,
+  maxPins: number.isRequired,
 };

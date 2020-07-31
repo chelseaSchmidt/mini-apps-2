@@ -1,5 +1,6 @@
 import React from 'react';
 import PinSelector from './PinSelector';
+import { getMaxPins } from '../utilities/pinAnalyzers';
 
 export default class App extends React.Component {
   constructor(props) {
@@ -8,13 +9,14 @@ export default class App extends React.Component {
       pins: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
       round: 1,
       newTurn: false,
+      maxPins: 10,
     };
     this.bowl = this.bowl.bind(this);
     this.resetPins = this.resetPins.bind(this);
   }
 
   bowl(e) {
-    const { pins, round, newTurn } = this.state;
+    const { pins, round } = this.state;
     const numPins = Number(e.target.id.slice(7));
     const targetPin = Math.floor(Math.random() * 10);
 
@@ -35,15 +37,18 @@ export default class App extends React.Component {
       incrementor = -1;
     }
 
+    const newPinState = pins.map((pin, i) => {
+      if (i >= startIndex && i <= endIndex) {
+        return 0;
+      }
+      return 1;
+    });
+
     this.setState({
-      pins: pins.map((pin, i) => {
-        if (i >= startIndex && i <= endIndex) {
-          return 0;
-        }
-        return 1;
-      }),
+      pins: newPinState,
       round: round + incrementor,
       newTurn: changeTurn,
+      maxPins: getMaxPins(newPinState),
     });
   }
 
@@ -52,11 +57,12 @@ export default class App extends React.Component {
       pins: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
       round: 1,
       newTurn: false,
+      maxPins: 10,
     });
   }
 
   render() {
-    const { pins, newTurn } = this.state;
+    const { pins, newTurn, maxPins } = this.state;
     return (
       <div>
         <div id="pin-area">
@@ -68,7 +74,7 @@ export default class App extends React.Component {
           })}
         </div>
         <button type="button" hidden={!newTurn} onClick={this.resetPins}>Reset Pins</button>
-        <PinSelector bowl={this.bowl} newTurn={newTurn} />
+        <PinSelector bowl={this.bowl} newTurn={newTurn} maxPins={maxPins} />
       </div>
     );
   }
