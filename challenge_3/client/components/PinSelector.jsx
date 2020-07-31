@@ -1,7 +1,7 @@
 import React from 'react';
-import { func } from 'prop-types';
+import { func, bool } from 'prop-types';
 
-const PinSelector = ({ bowl }) => {
+const PinSelector = ({ bowl, newTurn }) => {
   const rows = [
     [1, 2, 3],
     [4, 5, 6],
@@ -10,7 +10,7 @@ const PinSelector = ({ bowl }) => {
   ];
 
   return (
-    <div>
+    <div hidden={newTurn}>
       {rows.map((row, i) => {
         return (
           <div className="pin-selector-row" key={`row-${i}`}>
@@ -27,4 +27,5 @@ export default PinSelector;
 
 PinSelector.propTypes = {
   bowl: func.isRequired,
+  newTurn: bool.isRequired,
 };

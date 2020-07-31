@@ -6,12 +6,15 @@ export default class App extends React.Component {
     super(props);
     this.state = {
       pins: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+      round: 1,
+      newTurn: false,
     };
     this.bowl = this.bowl.bind(this);
+    this.resetPins = this.resetPins.bind(this);
   }
 
   bowl(e) {
-    const { pins } = this.state;
+    const { pins, round, newTurn } = this.state;
     const numPins = Number(e.target.id.slice(7));
     const targetPin = Math.floor(Math.random() * 10);
 
@@ -25,6 +28,13 @@ export default class App extends React.Component {
     const startIndex = targetPin - pinsLeft;
     const endIndex = targetPin + pinsRight;
 
+    let changeTurn = false;
+    let incrementor = 1;
+    if (round === 2) {
+      changeTurn = true;
+      incrementor = -1;
+    }
+
     this.setState({
       pins: pins.map((pin, i) => {
         if (i >= startIndex && i <= endIndex) {
@@ -32,11 +42,21 @@ export default class App extends React.Component {
         }
         return 1;
       }),
+      round: round + incrementor,
+      newTurn: changeTurn,
+    });
+  }
+
+  resetPins() {
+    this.setState({
+      pins: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+      round: 1,
+      newTurn: false,
     });
   }
 
   render() {
-    const { pins } = this.state;
+    const { pins, newTurn } = this.state;
     return (
       <div>
         <div id="pin-area">
@@ -47,7 +67,8 @@ export default class App extends React.Component {
             return <div className="down-pin" key={`${i}-pin`} />;
           })}
         </div>
-        <PinSelector bowl={this.bowl} />
+        <button type="button" hidden={!newTurn} onClick={this.resetPins}>Reset Pins</button>
+        <PinSelector bowl={this.bowl} newTurn={newTurn} />
       </div>
     );
   }
