@@ -13,3 +13,20 @@ export const getMaxPins = (pins) => {
   });
   return maxConsecutive;
 };
+
+export const getPinRanges = (pins) => {
+  const pinRanges = [];
+  let currentRange = [];
+  pins.forEach((pin, i) => {
+    if (pin === 1) {
+      currentRange.push(i);
+      if (i === 9) {
+        pinRanges.push(currentRange);
+      }
+    } else if (currentRange.length > 0) {
+      pinRanges.push(currentRange);
+      currentRange = [];
+    }
+  });
+  return pinRanges;
+};

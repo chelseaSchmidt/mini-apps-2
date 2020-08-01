@@ -1,6 +1,6 @@
 import React from 'react';
 import PinSelector from './PinSelector';
-import { getMaxPins } from '../utilities/pinAnalyzers';
+import { getMaxPins, getPinRanges } from '../utilities/pinAnalyzers';
 
 export default class App extends React.Component {
   constructor(props) {
@@ -10,25 +10,37 @@ export default class App extends React.Component {
       round: 1,
       newTurn: false,
       maxPins: 10,
+      pinRanges: [[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]],
     };
     this.bowl = this.bowl.bind(this);
     this.resetPins = this.resetPins.bind(this);
   }
 
   bowl(e) {
-    const { pins, round } = this.state;
+    const { pins, round, pinRanges } = this.state;
+    // number of pins to knock down
     const numPins = Number(e.target.id.slice(7));
-    const targetPin = Math.floor(Math.random() * 10);
+
+    const rangeIndex = Math.floor(Math.random() * pinRanges.length);
+
+    // which range of available indexes to target
+    const targetRange = pinRanges[rangeIndex];
+
+    // index of target pin index
+    const targetPinIndex = Math.floor(Math.random() * targetRange.length);
+
+    // target pin index
+    const targetPin = targetRange[targetPinIndex];
 
     let pinsLeft = Math.min(Math.floor(Math.random() * (numPins - 1)), targetPin);
-    const pinsRight = Math.min(numPins - 1 - pinsLeft, 9 - targetPin);
+    const pinsRight = Math.min(numPins - 1 - pinsLeft, targetRange.length - 1 - targetPin);
 
     if (pinsLeft + pinsRight + 1 < numPins) {
       pinsLeft += numPins - pinsLeft - pinsRight - 1;
     }
 
-    const startIndex = targetPin - pinsLeft;
-    const endIndex = targetPin + pinsRight;
+    const startIndex = targetRange[targetPin - pinsLeft];
+    const endIndex = targetRange[targetPin + pinsRight];
 
     let changeTurn = false;
     let incrementor = 1;
@@ -41,7 +53,7 @@ export default class App extends React.Component {
       if (i >= startIndex && i <= endIndex) {
         return 0;
       }
-      return 1;
+      return pin;
     });
 
     this.setState({
@@ -49,6 +61,7 @@ export default class App extends React.Component {
       round: round + incrementor,
       newTurn: changeTurn,
       maxPins: getMaxPins(newPinState),
+      pinRanges: getPinRanges(newPinState),
     });
   }
 
@@ -58,6 +71,7 @@ export default class App extends React.Component {
       round: 1,
       newTurn: false,
       maxPins: 10,
+      pinRanges: [[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]],
     });
   }
 
